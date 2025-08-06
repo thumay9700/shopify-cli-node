@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: npm
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run ESLint
+        run: npm run lint
+        
+      - name: Check formatting
+        run: npx prettier --check .
+  
+  test:
+    name: Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'windows-latest', 'macos-latest']
+        node-version: ['18.x', '20.x', 'latest']
+      fail-fast: false
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build project
+        run: npm run build
+        
+      - name: Run tests
+        run: npm run test
+        
+      - name: Run tests with coverage (Ubuntu + Latest Node only)
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 'latest'
+        run: npm run test:coverage
+        
+      - name: Upload coverage reports
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 'latest'
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./coverage
+          fail_ci_if_error: false
+  
+  build-and-pack:
+    name: Build and Pack CLI
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: npm
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build project
+        run: npm run build
+        
+      - name: Pack CLI
+        run: npm run prepack
+        
+      - name: Test CLI installation
+        run: |
+          npm pack
+          npm install -g shopify-cli-node-*.tgz
+          shopify-cli --version
+          shopify-cli --help
+        
+      - name: Clean up
+        run: npm run postpack

@@ -1,0 +1,57 @@
+# Shopify CLI Configuration File - Example
+# This is a sample configuration showing all available options
+# Copy this to ~/.shopify-cli/config.yaml and customize as needed
+
+version: "1.0.0"
+
+# Shopify accounts configuration
+# You can define multiple accounts and switch between them
+accounts:
+  - name: "development"
+    shopUrl: "https://your-dev-store.myshopify.com"
+    accessToken: "your-access-token-here"
+    apiKey: "your-api-key-here"
+    apiSecret: "your-api-secret-here"
+    isDefault: true
+
+  - name: "staging"
+    shopUrl: "https://your-staging-store.myshopify.com"
+    accessToken: "staging-access-token"
+    apiKey: "staging-api-key"
+    apiSecret: "staging-api-secret"
+    isDefault: false
+
+  - name: "production"
+    shopUrl: "https://your-prod-store.myshopify.com"
+    accessToken: "prod-access-token"
+    apiKey: "prod-api-key"
+    apiSecret: "prod-api-secret"
+    isDefault: false
+
+# Decodo API credentials (optional)
+# Used for geolocation services and advanced Shopify integrations
+# Contact your provider for available ports (10001-10010)
+decodoApi:
+  endpoint: "https://us.decodo.com:10001"
+  apiKey: "your-decodo-api-key"
+  timeout: 30000  # milliseconds
+
+# Proxy settings (optional)
+# Configure if you need to route traffic through a corporate proxy
+proxy:
+  enabled: false
+  host: "proxy.company.com"
+  port: 8080
+  username: "proxy-username"  # optional
+  password: "proxy-password"  # optional
+  protocol: "http"  # http, https, socks4, socks5
+
+# Global CLI settings
+settings:
+  debug: false
+  logLevel: "info"  # error, warn, info, debug
+  theme: "default"  # default, dark, light
+  autoUpdate: true
+
+# Automatically managed - do not edit
+lastUpdated: "2024-01-15T10:30:00.000Z"

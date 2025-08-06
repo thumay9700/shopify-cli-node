@@ -1,0 +1,32 @@
+{
+  "name": "shopify-cli-node",
+  "version": "1.0.0",
+  "description": "A Node.js CLI tool for Shopify development.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thumay9700/shopify-cli-node.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/thumay9700/shopify-cli-node/issues"
+  },
+  "homepage": "https://github.com/thumay9700/shopify-cli-node#readme",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "dotenv": "^17.2.1",
+    "inquirer": "^12.9.0",
+    "js-yaml": "^4.1.0",
+    "oclif": "^4.22.6",
+    "socks-proxy-agent": "^8.0.5"
+  },
+  "devDependencies": {
+    "jest": "^30.0.5"
+  }
+}
