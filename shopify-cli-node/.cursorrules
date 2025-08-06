@@ -1,0 +1,66 @@
+# Cursor AI Rules for Shopify CLI Management Tool
+
+# MANDATORY: Read these files before making any changes
+# 1. prd.md - Product Requirements Document
+# 2. claude.md - AI Agent Instructions 
+# 3. .github/CONTRIBUTING.md - Contributing Guidelines
+# 4. docs/AGENT_INTEGRATION.md - Technical documentation
+
+# Core Rules
+- Always use the `agent` command for programmatic access
+- Use `--format agent-json` for all agent outputs
+- Use `--dry-run` for potentially destructive operations
+- Follow the structured response schema defined in the docs
+
+# Project Structure
+shopify_cli_path: "./bin/run.js"
+agent_interface: "agent"
+config_system: "scli config"
+
+# Required Commands Before Starting Work
+pre_work_commands:
+  - "Read prd.md and claude.md files"
+  - "./bin/run.js agent --action health-check --format agent-json"
+  - "./bin/run.js --help"
+
+# Safe Command Patterns
+safe_commands:
+  health_check: "./bin/run.js agent --action health-check --format agent-json"
+  store_info: "./bin/run.js agent --action get-store-info --format agent-json"
+  list_products: "./bin/run.js agent --action list-products --limit 20 --format agent-json"
+  bulk_preview: "./bin/run.js agent --action bulk-update-products --file {{file}} --dry-run --format agent-json"
+
+# Prohibited Patterns
+avoid:
+  - "Never use human-readable commands for programmatic access"
+  - "Never use hardcoded credentials"
+  - "Never skip --dry-run for destructive operations"
+  - "Never ignore error suggestions in responses"
+
+# File Modification Rules
+when_adding_features:
+  - "Update src/commands/agent/interface.ts for new actions"
+  - "Update src/lib/agent-sdk.ts for SDK methods"
+  - "Update docs/AGENT_INTEGRATION.md for documentation"
+  - "Add examples to examples/agent-examples.js"
+  - "Update prd.md if adding significant features"
+
+# Testing Requirements
+test_commands:
+  build: "npm run build"
+  test: "npm test"
+  lint: "npm run lint"
+  agent_test: "./bin/run.js agent --action health-check --format agent-json"
+
+# Code Quality
+typescript: true
+coverage_target: 90
+error_handling: "Always provide actionable suggestions"
+response_format: "agent-json for all agent interactions"
+
+# Security Rules
+security:
+  - "No hardcoded secrets or credentials"
+  - "Sanitize all user inputs"
+  - "Use --confirm flags for destructive actions"
+  - "Respect API scopes and permissions"

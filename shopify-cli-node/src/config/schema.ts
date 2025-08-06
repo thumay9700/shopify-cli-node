@@ -30,14 +30,14 @@ const proxySettingsSchema = Joi.object<ProxySettings>({
   enabled: Joi.boolean().required().description('Whether proxy is enabled'),
   host: Joi.string().when('enabled', {
     is: true,
-    otherwise: Joi.optional(),
     then: Joi.required(),
+    otherwise: Joi.optional(),
   }).description('Proxy host'),
   password: Joi.string().optional().description('Proxy password'),
   port: Joi.number().when('enabled', {
     is: true,
-    otherwise: Joi.optional(),
     then: Joi.number().required().min(1).max(65_535),
+    otherwise: Joi.optional(),
   }).description('Proxy port'),
   protocol: Joi.string().optional().valid('http', 'https', 'socks4', 'socks5').default('http').description('Proxy protocol'),
   username: Joi.string().optional().description('Proxy username'),

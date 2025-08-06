@@ -92,7 +92,7 @@ static override flags = {
       // Check if it's coordinates (lat,lng)
       if (target.includes(',')) {
         const [lat, lng] = target.split(',').map(s => Number.parseFloat(s.trim()));
-        if (isNaN(lat) || isNaN(lng)) {
+        if (Number.isNaN(lat) || Number.isNaN(lng)) {
           this.error('Invalid coordinates format. Use: lat,lng (e.g., 37.7749,-122.4194)');
         }
 
@@ -163,8 +163,9 @@ static override flags = {
         }
       }
 
-    } catch (error: any) {
-      this.error(`Error: ${error.message}`);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.error(`Error: ${errorMessage}`);
     }
   }
 }

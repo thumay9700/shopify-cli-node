@@ -7,7 +7,25 @@
 /node_modules
 oclif.manifest.json
 
+# Shopify CLI sensitive files
+.env
+.env.local
+.env.*.local
+config.yaml
+*-config.yaml
+*.secrets
+*-secrets.*
 
+# Generated files from CLI operations
+product-updates-*.json
+low-stock-alert-*.json
+sync-results-*.json
+webhook-sync-results.json
+inventory-sync-results.json
+deployment-report-*.html
+deployment-report-*.json
+backup-*.json
+reports/
 
 yarn.lock
 pnpm-lock.yaml

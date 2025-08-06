@@ -1,0 +1,101 @@
+name: 'Setup Shopify CLI'
+description: 'Setup and configure the Shopify CLI for automation workflows'
+inputs:
+  node-version:
+    description: 'Node.js version to use'
+    required: false
+    default: '18'
+  cache-key-suffix:
+    description: 'Additional suffix for cache key'
+    required: false
+    default: ''
+  skip-build:
+    description: 'Skip building the CLI'
+    required: false
+    default: 'false'
+  config-accounts:
+    description: 'JSON string of accounts to configure'
+    required: false
+    default: ''
+
+outputs:
+  cli-path:
+    description: 'Path to the CLI binary'
+    value: ${{ steps.setup.outputs.cli-path }}
+  config-path:
+    description: 'Path to the configuration file'
+    value: ${{ steps.setup.outputs.config-path }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'npm'
+        cache-dependency-path: package-lock.json
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        npm ci
+        
+    - name: Build CLI
+      if: inputs.skip-build != 'true'
+      shell: bash
+      run: |
+        npm run build
+        
+    - name: Setup CLI configuration
+      id: setup
+      shell: bash
+      run: |
+        # Create CLI config directory
+        mkdir -p ~/.shopify-cli
+        
+        # Set CLI path
+        CLI_PATH="${{ github.workspace }}/bin/run.js"
+        echo "cli-path=$CLI_PATH" >> $GITHUB_OUTPUT
+        
+        # Make CLI executable
+        chmod +x "$CLI_PATH"
+        
+        # Configure accounts if provided
+        if [ -n "${{ inputs.config-accounts }}" ]; then
+          cat > ~/.shopify-cli/config.yaml << 'EOF'
+        version: "1.0.0"
+        lastUpdated: "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)"
+        accounts: ${{ inputs.config-accounts }}
+        settings:
+          debug: false
+          logLevel: "info"
+        EOF
+        fi
+        
+        # Set config path
+        CONFIG_PATH="$HOME/.shopify-cli/config.yaml"
+        echo "config-path=$CONFIG_PATH" >> $GITHUB_OUTPUT
+        
+    - name: Verify CLI setup
+      shell: bash
+      run: |
+        # Test CLI is working
+        ${{ steps.setup.outputs.cli-path }} --version
+        
+        # Test configuration if accounts were provided
+        if [ -n "${{ inputs.config-accounts }}" ]; then
+          echo "Testing CLI configuration..."
+          ${{ steps.setup.outputs.cli-path }} config --list-accounts || echo "No accounts configured or connection test failed"
+        fi
+        
+    - name: Cache CLI dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.shopify-cli
+          node_modules
+        key: shopify-cli-${{ runner.os }}-node${{ inputs.node-version }}-${{ hashFiles('package-lock.json') }}${{ inputs.cache-key-suffix }}
+        restore-keys: |
+          shopify-cli-${{ runner.os }}-node${{ inputs.node-version }}-
+          shopify-cli-${{ runner.os }}-

@@ -1,0 +1,71 @@
+{
+  "description": "Example webhook configuration for Shopify CLI automation",
+  "version": "1.0.0",
+  "webhooks": [
+    {
+      "topic": "orders/create",
+      "address": "https://your-app.com/webhooks/orders/created",
+      "description": "Triggered when a new order is created"
+    },
+    {
+      "topic": "orders/updated",
+      "address": "https://your-app.com/webhooks/orders/updated",
+      "description": "Triggered when an order is updated"
+    },
+    {
+      "topic": "orders/paid",
+      "address": "https://your-app.com/webhooks/orders/paid",
+      "description": "Triggered when an order is paid"
+    },
+    {
+      "topic": "orders/cancelled",
+      "address": "https://your-app.com/webhooks/orders/cancelled",
+      "description": "Triggered when an order is cancelled"
+    },
+    {
+      "topic": "orders/fulfilled",
+      "address": "https://your-app.com/webhooks/orders/fulfilled",
+      "description": "Triggered when an order is fulfilled"
+    },
+    {
+      "topic": "products/create",
+      "address": "https://your-app.com/webhooks/products/created",
+      "description": "Triggered when a new product is created"
+    },
+    {
+      "topic": "products/update",
+      "address": "https://your-app.com/webhooks/products/updated",
+      "description": "Triggered when a product is updated"
+    },
+    {
+      "topic": "products/delete",
+      "address": "https://your-app.com/webhooks/products/deleted",
+      "description": "Triggered when a product is deleted"
+    },
+    {
+      "topic": "inventory_levels/update",
+      "address": "https://your-app.com/webhooks/inventory/updated",
+      "description": "Triggered when inventory levels are updated"
+    },
+    {
+      "topic": "customers/create",
+      "address": "https://your-app.com/webhooks/customers/created",
+      "description": "Triggered when a new customer is created"
+    },
+    {
+      "topic": "customers/update",
+      "address": "https://your-app.com/webhooks/customers/updated",
+      "description": "Triggered when a customer is updated"
+    },
+    {
+      "topic": "app/uninstalled",
+      "address": "https://your-app.com/webhooks/app/uninstalled",
+      "description": "Triggered when the app is uninstalled"
+    }
+  ],
+  "settings": {
+    "timeout": 5000,
+    "retry_attempts": 3,
+    "verify_ssl": true
+  }
+}

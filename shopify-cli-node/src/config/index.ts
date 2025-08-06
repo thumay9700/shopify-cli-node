@@ -24,15 +24,5 @@ export * from './types';
 export const loadConfig = async () => {
   const { ConfigLoader } = await import('./loader');
   const loader = new ConfigLoader();
-  return await loader.load();
+  return loader.load();
 };
-
-// Re-export commonly used functions for convenience
-export type { 
-  ConfigValidationOptions, 
-  DecodoApiCredentials, 
-  GlobalSettings, 
-  ProxySettings, 
-  ShopifyAccount,
-  ShopifyCliConfig 
-} from './types';
