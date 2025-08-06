@@ -816,9 +816,9 @@ describe('ShopifyApiClient', () => {
 
       const rateLimitInfo = shopifyClient.getRateLimitInfo();
 
-      expect(rateLimitInfo.callLimit).toBe('25/40');
-      expect(rateLimitInfo.callsMade).toBe('25');
-      expect(rateLimitInfo.callsRemaining).toBe(15);
+      expect(rateLimitInfo?.callLimit).toBe('25/40');
+      expect(rateLimitInfo?.callsMade).toBe('25');
+      expect(rateLimitInfo?.callsRemaining).toBe(15);
     });
 
     test('should return empty rate limit info when header missing', () => {
@@ -826,9 +826,9 @@ describe('ShopifyApiClient', () => {
 
       const rateLimitInfo = shopifyClient.getRateLimitInfo();
 
-      expect(rateLimitInfo.callLimit).toBeUndefined();
-      expect(rateLimitInfo.callsMade).toBeUndefined();
-      expect(rateLimitInfo.callsRemaining).toBeUndefined();
+      expect(rateLimitInfo?.callLimit).toBeUndefined();
+      expect(rateLimitInfo?.callsMade).toBeUndefined();
+      expect(rateLimitInfo?.callsRemaining).toBeUndefined();
     });
 
     test('should get proxy statistics', () => {
@@ -927,7 +927,7 @@ describe('ShopifyApiClient', () => {
   describe('Request interceptors', () => {
     test('should add debug logging when SHOPIFY_CLI_DEBUG is enabled', () => {
       process.env.SHOPIFY_CLI_DEBUG = 'true';
-      const consoleSpy = jest.spyOn(console, 'debug').mockImplementation();
+      const consoleSpy = jest.spyOn(console, 'debug').mockImplementation(() => {});
 
       // Get the request interceptor
       const requestInterceptorCall = (mockAxiosInstance.interceptors.request.use as jest.Mock).mock.calls[0];
@@ -938,7 +938,7 @@ describe('ShopifyApiClient', () => {
         url: 'https://test-store.myshopify.com/admin/api/2024-01/products.json'
       };
 
-      requestInterceptor(config);
+      (requestInterceptor as any)(config);
 
       expect(consoleSpy).toHaveBeenCalledWith('🔗 API Request: GET https://test-store.myshopify.com/admin/api/2024-01/products.json');
 
@@ -948,7 +948,7 @@ describe('ShopifyApiClient', () => {
 
     test('should log successful responses when debug is enabled', () => {
       process.env.SHOPIFY_CLI_DEBUG = 'true';
-      const consoleSpy = jest.spyOn(console, 'debug').mockImplementation();
+      const consoleSpy = jest.spyOn(console, 'debug').mockImplementation(() => {});
 
       // Get the response success interceptor
       const responseInterceptorCall = (mockAxiosInstance.interceptors.response.use as jest.Mock).mock.calls[0];
@@ -959,7 +959,7 @@ describe('ShopifyApiClient', () => {
         status: 200
       };
 
-      successInterceptor(response);
+      (successInterceptor as any)(response);
 
       expect(consoleSpy).toHaveBeenCalledWith('✅ API Response: 200 https://test-store.myshopify.com/admin/api/2024-01/products.json');
 
@@ -969,7 +969,7 @@ describe('ShopifyApiClient', () => {
 
     test('should log errors when debug is enabled', () => {
       process.env.SHOPIFY_CLI_DEBUG = 'true';
-      const consoleSpy = jest.spyOn(console, 'debug').mockImplementation();
+      const consoleSpy = jest.spyOn(console, 'debug').mockImplementation(() => {});
 
       // Get the response error interceptor
       const responseInterceptorCall = (mockAxiosInstance.interceptors.response.use as jest.Mock).mock.calls[0];
@@ -977,7 +977,7 @@ describe('ShopifyApiClient', () => {
 
       const error = new Error('API Error');
 
-      expect(() => errorInterceptor(error)).rejects.toBe(error);
+      await expect((errorInterceptor as any)(error)).rejects.toBe(error);
       expect(consoleSpy).toHaveBeenCalledWith('❌ API Error: API Error');
 
       consoleSpy.mockRestore();

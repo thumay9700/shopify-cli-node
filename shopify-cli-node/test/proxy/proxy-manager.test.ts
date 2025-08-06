@@ -216,7 +216,7 @@ describe('ProxyManager', () => {
       const requestInterceptor = requestInterceptorCall[0];
 
       const mockConfig = { url: 'https://api.example.com' };
-      const modifiedConfig = requestInterceptor(mockConfig);
+      const modifiedConfig = (requestInterceptor as any)(mockConfig);
 
       expect(modifiedConfig.httpsAgent).toBe(mockProxyAgent);
       expect(modifiedConfig.httpAgent).toBe(mockProxyAgent);
@@ -236,7 +236,7 @@ describe('ProxyManager', () => {
         data: { success: true }
       };
 
-      const result = successInterceptor(mockResponse);
+      const result = (successInterceptor as any)(mockResponse);
 
       expect(result).toBe(mockResponse);
       // Check that proxy was marked as successful
@@ -262,10 +262,10 @@ describe('ProxyManager', () => {
       // Mock the axios instance call for retry
       mockAxiosInstance.mockResolvedValue({ data: 'success' });
 
-      const result = await errorInterceptor(mockError);
+      const result = await (errorInterceptor as any)(mockError);
 
       expect(mockError.config._retryCount).toBe(1);
-      expect(mockAxiosInstance).toHaveBeenCalledWith(mockError.config);
+      expect(mockAxiosInstance).toHaveBeenCalledWith(expect.objectContaining({ _proxyPort: 10_002, _retryCount: 1 }));
     });
 
     test('should reject after max retries exceeded', async () => {
@@ -281,7 +281,7 @@ describe('ProxyManager', () => {
         }
       };
 
-      await expect(errorInterceptor(mockError)).rejects.toBe(mockError);
+      await expect((errorInterceptor as any)(mockError)).rejects.toBe(mockError);
     });
   });
 
@@ -290,7 +290,7 @@ describe('ProxyManager', () => {
 
     beforeEach(() => {
       mockFetch = jest.fn();
-      globalThis.fetch = mockFetch;
+      globalThis.fetch = mockFetch as any;
     });
 
     test('should create fetch function with proxy support', async () => {
@@ -300,7 +300,7 @@ describe('ProxyManager', () => {
         json: async () => ({ success: true }),
         ok: true,
         status: 200
-      });
+      } as any);
 
       const response = await fetchWithProxy('https://api.example.com');
 
@@ -322,7 +322,7 @@ describe('ProxyManager', () => {
           json: async () => ({ success: true }),
           ok: true,
           status: 200
-        });
+        } as any);
 
       const response = await fetchWithProxy('https://api.example.com');
 

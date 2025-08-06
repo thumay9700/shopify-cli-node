@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { Command } from '@oclif/core';
-import { test as oclifTest } from '@oclif/test';
+import { runCommand } from '@oclif/test';
 import * as fs from 'fs-extra';
 import * as os from 'node:os';
 import * as path from 'node:path';
@@ -155,7 +155,7 @@ describe('CLI Commands', () => {
       await oclifTest
         .stderr()
         .command(['config'])
-        .catch(error => {
+        .catch((error: any) => {
           expect(error.error.message).toContain('Configuration not found');
         })
         .it('handles missing config');
@@ -294,7 +294,7 @@ describe('CLI Commands', () => {
       await oclifTest
         .stderr()
         .command(['product:delete', '123'])
-        .catch(error => {
+        .catch((error: any) => {
           expect(error.error.message).toContain('confirmation');
         })
         .it('requires confirmation for delete');
@@ -536,7 +536,7 @@ describe('CLI Commands', () => {
       await oclifTest
         .stderr()
         .command(['geolocation:lookup', '--ip', '8.8.8.8'])
-        .catch(error => {
+        .catch((error: any) => {
           expect(error.error.message).toContain('Decodo API');
         })
         .it('handles missing Decodo API config');
@@ -558,7 +558,7 @@ describe('CLI Commands', () => {
       await oclifTest
         .stderr()
         .command(['product:list'])
-        .catch(error => {
+        .catch((error: any) => {
           expect(error.error.message).toContain('connection');
         })
         .it('handles API connection errors');
@@ -572,7 +572,7 @@ describe('CLI Commands', () => {
       await oclifTest
         .stderr()
         .command(['product:list'])
-        .catch(error => {
+        .catch((error: any) => {
           expect(error.error.message).toContain('account');
         })
         .it('handles missing account');
@@ -584,7 +584,7 @@ describe('CLI Commands', () => {
       await oclifTest
         .stderr()
         .command(['product:get'])
-        .catch(error => {
+        .catch((error: any) => {
           expect(error.error.message).toContain('Missing');
         })
         .it('handles invalid arguments');
@@ -679,9 +679,9 @@ describe('CLI Commands', () => {
     test('should handle interactive product creation wizard', async () => {
       // Mock inquirer responses
       const mockInquirer = jest.fn()
-        .mockResolvedValueOnce('New Product Title')
-        .mockResolvedValueOnce('Product description')
-        .mockResolvedValueOnce('Test Vendor');
+        .mockResolvedValueOnce('New Product Title' as any)
+        .mockResolvedValueOnce('Product description' as any)
+        .mockResolvedValueOnce('Test Vendor' as any);
 
       mockApiClient.products.create.mockResolvedValue({
         data: {
@@ -772,7 +772,7 @@ describe('CLI Commands', () => {
       await oclifTest
         .stderr()
         .command(['config', '--test-connection'])
-        .catch(error => {
+        .catch((error: any) => {
           expect(error.error.message).toContain('Connection failed');
         })
         .it('handles invalid credentials');

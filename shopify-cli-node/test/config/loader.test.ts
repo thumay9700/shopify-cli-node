@@ -9,8 +9,18 @@ import { createDefaultConfig } from '../../src/config/schema';
 import { DecodoApiCredentials, ShopifyAccount, ShopifyCliConfig } from '../../src/config/types';
 
 // Mock dependencies
-jest.mock('fs-extra');
-jest.mock('js-yaml');
+jest.mock('fs-extra', () => ({
+  ensureDir: jest.fn(),
+  existsSync: jest.fn(),
+  pathExists: jest.fn(),
+  readFile: jest.fn(),
+  writeFile: jest.fn()
+}));
+jest.mock('js-yaml', () => ({
+  dump: jest.fn(),
+  JSON_SCHEMA: {},
+  load: jest.fn()
+}));
 jest.mock('dotenv');
 
 const mockedFs = fs as jest.Mocked<typeof fs>;
